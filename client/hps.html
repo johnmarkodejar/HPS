@@ -1,0 +1,42 @@
+<head>
+  <title>Rock, Paper and Scissor Game</title>
+</head>
+<body>
+  {{> game}}
+  {{> gameroom}}
+  {{> options}}
+  {{> players}}
+  <div class="counter">{{> counter}}</div>
+</body>
+
+<template name="game">
+  <h1>Rock, Paper, Scissor Game</h1>
+  <div style="position:absolute; right:20px; top:10px;">{{> profile}}</div>
+  {{#if totalplayers}}
+  <input class="join" type="button" value="Join Game" />
+  {{else}}
+  <input class="start" type="button" value="Start Game" />
+  {{/if}}
+</template>
+<template name="counter">
+  {{ctr}}
+</template>
+<template name="gameroom">
+ 	<div id="gameroom" style="border:1px #ccc solid; height:100px; width:10%; margin:10px 0;">
+  	{{#each players}}
+     <p style="margin:0; padding:2px;">Player {{player}}</p>
+     {{/each}}
+  	</div>
+</template>
+<template name="options">
+ 	<input type="radio" name="opt" value="rock" /> Rock
+    <input type="radio" name="opt" value="paper" /> Paper
+    <input type="radio" name="opt" value="scissor" /> Scissor
+</template>
+<template name="players">
+ 	{{#each player}}
+     {{occupied}}
+     {{/each}}
+</template>
+
+
