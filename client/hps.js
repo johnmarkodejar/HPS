@@ -2,6 +2,13 @@
  var int = false;
  var selected = false;
 if (Meteor.isClient) {
+	var ip = myIP();
+	var d = new Date();
+	var cnt = Visitors.find({"ip":ip}).count();
+	if(cnt==0){
+		//1 minute
+		Visitors.insert({"ip":ip,"active":d.getTime()+10000});
+	}
    Template.gameroom.helpers({
 	 players: function() {
 	 	return Game.find({occupied:"yes"});
@@ -36,6 +43,34 @@ if (Meteor.isClient) {
 	
 	var setInt = setInterval(function () {
 		var start = Timer.find({start:1}).count();
+		var d = new Date();
+		var ip = myIP();	
+		
+		var ctr = Visitors.find({"ip":ip}).count();
+		if(ctr > 0){
+			var vres = Visitors.findOne({"ip":ip});
+			var myip = vres["ip"];
+			var vid = vres["_id"];
+			var active = vres["active"];
+			
+			if(active < d.getTime()){
+				//console.log(active+"not active");
+			}else{
+				Visitors.update({"_id":vid},{"ip":ip,"active":d.getTime()+10000});
+			}
+			var v = "";
+			Visitors.find().fetch().forEach(function(o){
+				var oa = o['active'];
+				var oid = o['_id'];
+				if(oa< d.getTime()){
+					Visitors.remove({"_id":oid});
+				}else{
+					v+= "<li>"+o["ip"]+"</li>";
+				}
+			});
+			$("#visitors").html(v);
+		}
+		
 		if(start != 0){
 			if(c==0){
 				c = 10;	
@@ -139,30 +174,19 @@ if (Meteor.isClient) {
 		Answer.update({"_id":id},{"player":player,"answer":val});
 	}
   });
-  /*
-  
-  function startgame(){
-	  var cnt = Answer.find().count();
-	  console.log(cnt);
-	  if(cnt==0){
-		Answer.insert({"player":"1","answer":""});  
-		Answer.insert({"player":"2","answer":""});  
-	  }
-	  var player = Session.get("player");
-	  var res = Game.findOne({player:player});
-	  console.log(res['player']);
-	 int = setInterval(function () {
-		if(c==0){
-			c = 10;	
-			clearInterval(int);
-			int = false;
-		}else{
-			c-=1;	
-		}	
-		
-		$(".counter").html(c);
-	  }, 1000);	  
-	 
-  }
-  */
+  function myIP() {
+		if (window.XMLHttpRequest) xmlhttp = new XMLHttpRequest();
+		else xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+
+		xmlhttp.open("GET","http://api.hostip.info/get_html.php",false);
+		xmlhttp.send();
+
+		hostipInfo = xmlhttp.responseText.split("\n");
+
+		for (i=0; hostipInfo.length >= i; i++) {
+			ipAddress = hostipInfo[i].split(":");
+			if ( ipAddress[0] == "IP" ) return ipAddress[1];
+		}
+		return false;
+	}
 }
