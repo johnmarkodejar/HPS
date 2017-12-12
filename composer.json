@@ -1,3 +1,35 @@
 {
-    "name": "RPS-JM",
+    "name": "RPHS-JM",
+    "type": "library",
+    "description": "TEST",
+    "keywords": ["faker", "fixtures", "data"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "François Zaninotto"
+        }
+    ],
+    "require": {
+        "php": "^5.3.3 || ^7.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.8.35 || ^5.7",
+        "squizlabs/php_codesniffer": "^1.5",
+        "ext-intl": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Faker\\": "src/Faker/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Faker\\Test\\": "test/Faker/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.8-dev"
+        }
+    }
 }
